@@ -1,9 +1,11 @@
 import React from 'react';
+import Alltask from './Alltask';
 
 const Home = () => {
     return (
         <div>
-            <p>This is home</p>
+            <p>Welcome To Task Manager</p>
+            <Alltask></Alltask>
         </div>
     );
 };
