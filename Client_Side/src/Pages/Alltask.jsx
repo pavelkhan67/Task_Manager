@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import useAxiosSecure from '../hooks/useAxiosSecure';
-import Swal from 'sweetalert2';
-import { FaTrashAlt } from 'react-icons/fa';
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import Swal from "sweetalert2";
+import { FaEdit, FaTrashAlt } from "react-icons/fa";
+import useAxiosSecure from "../hooks/useAxiosSecure";
+const AllTask = () => {
 
-
-function Alltask() {
     const [data, setData] = useState([]);
     const [axiosSecure] = useAxiosSecure();
 
@@ -18,7 +18,30 @@ function Alltask() {
             });
     }, []);
 
-    const handleDelete = (task, refetch) => {
+    //   handle Status and Update Status
+    const handleStatus = (id) => {
+        fetch(`http://localhost:5000/status/${id}`, {
+            method: "PATCH",
+            headers: {
+                "content-type": "application/json",
+            },
+            body: JSON.stringify({ status: "Completed" }),
+        })
+            .then((res) => res.json())
+            .then((data) => {
+                if (data.modifiedCount > 0) {
+                    Swal.fire({
+                        position: "center",
+                        icon: "success",
+                        title: "successfully Updated Your Task",
+                        showConfirmButton: false,
+                        timer: 1500,
+                    });
+                }
+            });
+    };
+    //Handle Delete
+    const handleDelete = (task) => {
         Swal.fire({
             title: 'Are you sure?',
             text: `You want to delete ${task.title} ?`,
@@ -32,59 +55,77 @@ function Alltask() {
                 fetch(`http://localhost:5000/addedtask/${task._id}`, {
                     method: 'DELETE'
                 })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.deletedCount > 0) {
-                        Swal.fire(
-                            'Deleted!',
-                            'Your Selected Task has been deleted.',
-                            'success'
-                        );
-                    }
-                });
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.deletedCount > 0) {
+                            Swal.fire(
+                                'Deleted!',
+                                'Your Selected Task has been deleted.',
+                                'success'
+                            );
+                        }
+                    });
             }
         });
-    }    
+    }
 
     return (
-        <div className="overflow-x-auto w-full pb-10">
-            <table className="table w-full ">
-                {/* head */}
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Title</th>
-                        <th>Status</th>
-                        <th>Description</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {
-                        data.map((task, index) => <tr
-                            key={task._id}
-                        >
-                            <td>
-                                {index + 1}
-                            </td>
-
-                            <td>
-                                {task.title}
-                            </td>
-                            <td>{task.status}</td>
-                            <td>{task.info}</td>
-                            <td>
-                                <div className='flex gap-2'>
-                                    <button onClick={() => handleEdit(task)} className="btn btn-sm btn-ghost bg-red-600  text-white"><FaTrashAlt></FaTrashAlt></button>
-                                    <button onClick={() => handleDelete(task)} className="btn btn-sm btn-ghost bg-red-600  text-white"><FaTrashAlt></FaTrashAlt></button>
-                                </div>
-                            </td>
-                        </tr>)
-                    }
-                </tbody>
-            </table>
+        <div className="bg-base-200 mt-10">
+            <h2 className="text-center font-semibold text-xl pt-5">All Task List</h2>
+            {data.length > 0 ?
+                <div className="table-responsive">
+                    <table className="table table-dark table-striped">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Title</th>
+                                <th>Description</th>
+                                <th>Update Status</th>
+                                <th>Edit</th>
+                                <th>Delete</th>
+                            </tr>
+                        </thead>
+                        {data.map((task, index) => (
+                            <tbody key={task._id}>
+                                <tr className="text-start">
+                                    <th scope="row">{index + 1}</th>
+                                    <td>{task.title}</td>
+                                    <td>{task.info}</td>
+                                    <td>
+                                        <button
+                                            onClick={() => handleStatus(task._id)}
+                                            className={`${task.status == "pending"
+                                                ? "text-red-500 "
+                                                : "text-green-600"
+                                                }`}
+                                        >
+                                            {task.status}
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <Link to={`/editTask/${task._id}`}>
+                                            <button className="btn btn-sm btn-ghost bg-blue-600 text-white">
+                                                <FaEdit /></button>
+                                        </Link>
+                                    </td>
+                                    <td>
+                                        <button
+                                            onClick={() => handleDelete(task)}
+                                            className="btn btn-sm btn-ghost bg-red-600  text-white"><FaTrashAlt />
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        ))}
+                    </table>
+                </div> :
+                <div className="text-center mt-5">
+                    <p> No Task <Link to="/add" className="text-green-600 text-sm underline">
+                        Add New Task
+                    </Link></p>
+                </div>}
         </div>
     );
-}
+};
 
-export default Alltask;
+export default AllTask;

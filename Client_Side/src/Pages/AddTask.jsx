@@ -31,7 +31,7 @@ const AddTask = () => {
     };
 
     return (
-        <div className="w-9/12 mx-auto mt-10 bg-base-200 ">
+        <div className="w-9/12 mx-auto mt-10 bg-base-200 rounded-sm">
             <form onSubmit={handleSubmit(onSubmit)} className='p-10'>
                     <div className="form-control w-full ">
                         <label className="label">

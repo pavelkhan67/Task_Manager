@@ -4,7 +4,6 @@ import Alltask from './Alltask';
 const Home = () => {
     return (
         <div>
-            <p>Welcome To Task Manager</p>
             <Alltask></Alltask>
         </div>
     );

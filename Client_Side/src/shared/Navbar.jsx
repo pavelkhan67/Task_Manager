@@ -37,8 +37,10 @@ const Navbar = () => {
                 <NavLink to='/' className="btn btn-ghost text-xl">Task Manager</NavLink>
             </div>
             <div className="flex-none">
-                <ul className="menu menu-horizontal px-1 flex justify-center items-center gap-10">
-                <NavLink to="/add"><button className='btn bg-slate-700 border-0 border-b-4 border-r-4 normal-case border-green-600'><span className='text-green-600'>Add task</span></button></NavLink>                     {
+                <ul className="menu menu-horizontal px-1 flex justify-center items-center gap-5">
+                    <NavLink to="/add"><button className='btn btn-sm border-0 border-b-4 border-r-4 normal-case border-green-600'><span className='text-green-600'>Add task</span></button></NavLink>
+                    <NavLink to="/mytask"><button className='btn btn-sm border-0 border-b-4 border-r-4 normal-case border-green-600'><span className='text-green-600'>My Task</span></button></NavLink>
+                    {
                         user ?
                             <div className="dropdown dropdown-end">
                                 <div className="tooltip tooltip-left" data-tip={user?.displayName}>
@@ -49,10 +51,10 @@ const Navbar = () => {
                                     </label></button>
                                 </div>
                                 <ul tabIndex={0} className="mt-3 py-5 z-10 shadow-xl menu menu-sm dropdown-content  rounded-box bg-slate-900 w-40">
-                                    <button onClick={handleLogOut} className='btn bg-white w-9/12 mx-auto border-0 border-b-4 border-r-4 normal-case border-green-600'><span className='text-green-600'>Log Out</span></button>
+                                    <button onClick={handleLogOut} className='btn btn-sm bg-white w-9/12 mx-auto border-0 border-b-4 border-r-4 normal-case border-green-600'><span className='text-green-600'>Log Out</span></button>
                                 </ul>
                             </div>
-                            : <> <NavLink to="/login"><button className='btn bg-slate-700 border-0 border-b-4 border-r-4 normal-case border-green-600'><span className='text-green-600'>Login</span></button></NavLink> </>
+                            : <> <NavLink to="/login"><button className='btn btn-sm bg-slate-700 border-0 border-b-4 border-r-4 normal-case border-green-600'><span className='text-green-600'>Login</span></button></NavLink> </>
                     }
 
                 </ul>
