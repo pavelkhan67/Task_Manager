@@ -62,11 +62,13 @@ async function run() {
 
 
         // user related api
+        // get all users
         app.get('/users', verifyJWT, async (req, res) => {
             const result = await usersCollection.find().toArray();
             res.send(result);
         });
 
+        // post a user
         app.post('/users', async (req, res) => {
             const user = req.body;
             const query = { email: user.email }
@@ -80,7 +82,7 @@ async function run() {
         })
 
         // Task related api
-
+        //get all task
         app.get('/addedtask', async (req, res) => {
             const email = req.query.email;
             const query = { email: email };
@@ -88,12 +90,57 @@ async function run() {
             res.send(result);
         })
 
+        // add a task
         app.post('/addedtask', verifyJWT, async (req, res) => {
             const newItem = req.body;
             const result = await taskCollection.insertOne(newItem)
             res.send(result);
         })
 
+        // get a specific task
+        app.get("/tasks/:id", async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) };
+            const result = await taskCollection.findOne(filter);
+            res.send(result);
+        });
+
+        // edit a task
+        app.patch("/edit/:id", async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) };
+            const editValue = req.body;
+            const options = { upsert: true };
+            const editDoc = {
+                $set: {
+                    title: editValue.title,
+                    info: editValue.info,
+                },
+            };
+            const result = await taskCollection.updateOne(filter, editDoc, options);
+            res.send(result);
+        });
+
+        //update a task status
+        app.patch("/status/:id", async (req, res) => {
+            const id = req.params.id;
+            const user = req.body;
+            const filter = { _id: new ObjectId(id) };
+            const option = { upsert: true };
+            const updateStatus = {
+                $set: {
+                    status: user.status,
+                },
+            };
+            const result = await taskCollection.updateOne(
+                filter,
+                updateStatus,
+                option
+            );
+            res.send(result);
+        });
+
+        // delete a task
         app.delete('/addedtask/:id', async (req, res) => {
             const id = req.params.id;
             console.log(id);
